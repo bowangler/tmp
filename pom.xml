@@ -118,12 +118,6 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.4</version>
         </dependency>
-        <!-- 批处理 -->
-        <dependency>
-            <groupId>cn.hots</groupId>
-            <artifactId>caf-dispatcher-scheduler</artifactId>
-            <version>1.0.1</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

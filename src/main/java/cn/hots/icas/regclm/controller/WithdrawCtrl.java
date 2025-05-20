@@ -4,12 +4,15 @@ import cn.hots.icas.clmlogic.regclm.dto.WithdrawmVO;
 import cn.hots.icas.clmlogic.regclm.service.WithdrawnService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.persistence.EntityManagerFactory;
 
 /**
  * @author TIT
@@ -24,11 +27,16 @@ public class WithdrawCtrl {
 
     @Autowired
     private WithdrawnService withdrawnService;
-
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
     @RequestMapping(value = "/drawnClaim", produces = "application/json", method = RequestMethod.POST)
     @ResponseBody
     public WithdrawmVO drawnClaim(@RequestBody WithdrawmVO vo) {
         logger.info("withdrawnClaim start");
+
+        // 打印实现类信息
+        logger.info("EntityManagerFactory实现类: {}", entityManagerFactory.getClass().getName());
+        logger.info("是否是代理对象: {}", AopUtils.isAopProxy(entityManagerFactory));
         withdrawnService.saveWithdrawn(vo);
         return vo;
     }

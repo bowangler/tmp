@@ -8,6 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * @author TIT
@@ -22,19 +24,24 @@ public class WithdrawnServiceImpl implements WithdrawnService {
     private NlpNclmappRepo nlpNclmappRepo;
 
     @Override
+    @Transactional
     public void saveWithdrawn(WithdrawmVO vo) {
         logger.info("WithdrawnVO: {}", vo);
-//        logger.info("Transaction active: {}", TransactionSynchronizationManager.isActualTransactionActive());
+        logger.info("Transaction active: {}", TransactionSynchronizationManager.isActualTransactionActive());
         logger.info("Proxy Type: {}", this.getClass().getName());
 
         NlpNclmappEO nlpNclmappEO = nlpNclmappRepo.findByCappno(vo.getCappno());
         logger.info(nlpNclmappEO.getCappno());
         logger.info(nlpNclmappEO.getPid());
         logger.info(nlpNclmappEO.getName());
+        logger.info("flag: {}", nlpNclmappEO.getFlag());
         nlpNclmappEO.setFlag("4");
         nlpNclmappEO.setMovereason("不统一");
         nlpNclmappEO.setMoveby("系统");
         nlpNclmappEO.setFlag("4");
+        nlpNclmappRepo.save(nlpNclmappEO);
+
+        logger.info("flag: {}", nlpNclmappEO.getFlag());
     }
 
 }

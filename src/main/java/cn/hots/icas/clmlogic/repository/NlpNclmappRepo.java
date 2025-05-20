@@ -13,4 +13,5 @@ import java.util.List;
 public interface NlpNclmappRepo {
     NlpNclmappEO findByCappno(String cappno);
 
+    void save(NlpNclmappEO nlpNclmappEO);
 }

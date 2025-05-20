@@ -1,6 +1,7 @@
 package cn.hots.icas.clmlogic.repository.impl;
 
 import cn.hots.icas.clmlogic.entity.NlpNclmappEO;
+import cn.hots.icas.clmlogic.repository.BaseHibernate4QueryDao;
 import cn.hots.icas.clmlogic.repository.NlpNclmappRepo;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * @date 2025/5/7 15:43
  */
 @Repository
-public class NlpNclmappRepoImpl implements NlpNclmappRepo {
+public class NlpNclmappRepoImpl extends BaseHibernate4QueryDao<NlpNclmappEO> implements NlpNclmappRepo {
     @PersistenceContext
     private EntityManager entityManager;
 

@@ -3,6 +3,7 @@ package cn.hots.icas.clmlogic.entity;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -15,7 +16,8 @@ import java.util.Date;
 @Entity
 @Table(name = "NLP_NCLMAPP")
 @DynamicUpdate
-public class NlpNclmappEO {
+public class NlpNclmappEO implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     private String cappno;
     private String pid;
