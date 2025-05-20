@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/tx
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/data/jpa
+                           https://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- 1. 数据源配置 -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/icas?useSSL=false&amp;serverTimezone=UTC"/>
+        <property name="username" value="icas"/>
+        <property name="password" value="Tit@123456"/>
+    </bean>
+
+    <!-- 2. JPA实体管理器工厂 -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="cn.hots.icas.clmlogic.entity,
+            cn.hots.icas.autoconfigure.ws.entity,cn.hots.caf.dispatcher.scheduler.entity"/> <!-- 实体类包路径 -->
+        <property name="persistenceUnitName" value="icasPU"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL8Dialect"/>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 3. 事务管理器 -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- 4. 启用注解驱动的事务管理 -->
+    <tx:annotation-driven transaction-manager="transactionManager"
+                          proxy-target-class="true"/>
+    <!-- 5. AOP声明式事务 -->
+    <tx:advice id="serviceAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+<!--            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception"/>-->
+            <tx:method name="*" propagation="REQUIRED" rollback-for="Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config proxy-target-class="true">
+<!--        <aop:pointcut expression="execution(* cn.hots..*.service.impl.*Impl.*(..))"-->
+<!--                      id="serviceMethod"/>-->
+        <aop:pointcut expression="execution(* cn.hots..*.service..*ServiceImpl.save*(..))"
+                      id="serviceMethod"/>
+        <aop:advisor advice-ref="serviceAdvice" pointcut-ref="serviceMethod"/>
+    </aop:config>
+    <!-- 6. 扫描DAO和Service组件 -->
+<!--    <context:component-scan base-package="cn.hots.icas.clmlogic"/>-->
+    <jpa:repositories base-package="cn.hots.caf.dispatcher.scheduler.repository"
+                      entity-manager-factory-ref="entityManagerFactory"/>
+
+    <bean class="org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+</beans>
