@@ -1,8 +1,8 @@
-package cn.hots.icas.clmlogic.repository;
+package cn.hots.repository;
 
-import cn.hots.icas.clmlogic.entity.NlpNclmappEO;
 
-import java.util.List;
+import cn.hots.entity.NlpNclmappEO;
+
 
 /**
  * @author TIT
@@ -12,6 +12,4 @@ import java.util.List;
  */
 public interface NlpNclmappRepo {
     NlpNclmappEO findByCappno(String cappno);
-
-    void save(NlpNclmappEO nlpNclmappEO);
 }

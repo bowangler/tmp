@@ -1,18 +1,14 @@
 package cn.hots.icas.regclm.controller;
 
-import cn.hots.icas.clmlogic.regclm.dto.WithdrawmVO;
-import cn.hots.icas.clmlogic.regclm.service.WithdrawnService;
+import cn.hots.entity.Claim;
+import cn.hots.service.ClaimService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.persistence.EntityManagerFactory;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author TIT
@@ -25,19 +21,26 @@ import javax.persistence.EntityManagerFactory;
 public class WithdrawCtrl {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private WithdrawnService withdrawnService;
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-    @RequestMapping(value = "/drawnClaim", produces = "application/json", method = RequestMethod.POST)
-    @ResponseBody
-    public WithdrawmVO drawnClaim(@RequestBody WithdrawmVO vo) {
-        logger.info("withdrawnClaim start");
+//    @Autowired
+//    private WithdrawnService withdrawnService;
 
-        // 打印实现类信息
-        logger.info("EntityManagerFactory实现类: {}", entityManagerFactory.getClass().getName());
-        logger.info("是否是代理对象: {}", AopUtils.isAopProxy(entityManagerFactory));
-        withdrawnService.saveWithdrawn(vo);
-        return vo;
+    @Autowired
+    private ClaimService claimService;
+
+    @PostMapping("/drawnClaim")
+    public ResponseEntity<String> updateClaimStatus(@RequestParam Long id, @RequestParam String status) {
+        Claim claim = claimService.updateClaimStatus(id, status);
+        if (claim != null) {
+            return new ResponseEntity<>("Claim status updated successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Claim not found", HttpStatus.NOT_FOUND);
+        }
     }
+//    @RequestMapping(value = "/drawnClaim", produces = "application/json", method = RequestMethod.POST)
+//    @ResponseBody
+//    public WithdrawmVO drawnClaim(@RequestBody WithdrawmVO vo) {
+//        logger.info("withdrawnClaim start");
+//        withdrawnService.saveWithdrawn(vo);
+//        return vo;
+//    }
 }

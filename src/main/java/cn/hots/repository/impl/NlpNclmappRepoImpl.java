@@ -1,8 +1,7 @@
-package cn.hots.icas.clmlogic.repository.impl;
+package cn.hots.repository.impl;
 
-import cn.hots.icas.clmlogic.entity.NlpNclmappEO;
-import cn.hots.icas.clmlogic.repository.BaseHibernate4QueryDao;
-import cn.hots.icas.clmlogic.repository.NlpNclmappRepo;
+import cn.hots.entity.NlpNclmappEO;
+import cn.hots.repository.NlpNclmappRepo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -14,10 +13,10 @@ import java.util.List;
  * @author TIT
  * @version 1.0
  * @description: TODO
- * @date 2025/5/7 15:43
+ * @date 2025/5/20 17:14
  */
 @Repository
-public class NlpNclmappRepoImpl extends BaseHibernate4QueryDao<NlpNclmappEO> implements NlpNclmappRepo {
+public class NlpNclmappRepoImpl implements NlpNclmappRepo {
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,4 +31,5 @@ public class NlpNclmappRepoImpl extends BaseHibernate4QueryDao<NlpNclmappEO> imp
         }
         return resultList.get(0);
     }
+
 }
